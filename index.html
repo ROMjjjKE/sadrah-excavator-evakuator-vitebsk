@@ -11,20 +11,19 @@
 <meta property="og:locale" content="ru_RU">
 <link rel="preload" href="fonts/roboto-condensed-cyrillic-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/source-sans-3-cyrillic-400.woff2" as="font" type="font/woff2" crossorigin>
-@font-face{font-family:'FbFallback';src:local('Arial');size-adjust:100%;ascent-override:95%;descent-override:25%;line-gap-override:0%}
+<style>
 @font-face{font-family:'Roboto Condensed';font-style:normal;font-weight:700;font-display:swap;src:url('fonts/roboto-condensed-cyrillic-700.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
 @font-face{font-family:'Roboto Condensed';font-style:normal;font-weight:700;font-display:swap;src:url('fonts/roboto-condensed-latin-700.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122}
 @font-face{font-family:'Source Sans 3';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/source-sans-3-cyrillic-400.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
 @font-face{font-family:'Source Sans 3';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/source-sans-3-latin-400.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122}
 @font-face{font-family:'Source Sans 3';font-style:normal;font-weight:600;font-display:swap;src:url('fonts/source-sans-3-cyrillic-600.woff2') format('woff2');unicode-range:U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116}
 @font-face{font-family:'Source Sans 3';font-style:normal;font-weight:600;font-display:swap;src:url('fonts/source-sans-3-latin-600.woff2') format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122}
-<style>
 
 :root{
  --stone:#edefe7; --stone2:#f7f7f1; --ink:#1e231f; --ink2:#4a524c; --ink3:#5c655e;
  --line:rgba(30,35,31,.15); --line2:rgba(30,35,31,.08);
- --ochre:#b8862a; --ochre-d:#7d550f; --moss:#3d5343;
- --r:8px; --f:"Roboto Condensed","FbFallback",system-ui,sans-serif; --fb:"Source Sans 3",system-ui,sans-serif;
+ --ochre:#b8862a; --ochre-d:#96691c; --moss:#3d5343;
+ --r:8px; --f:"Roboto Condensed",system-ui,sans-serif; --fb:"Source Sans 3",system-ui,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
@@ -173,8 +172,8 @@ footer{background:var(--ink);border-top:1px solid rgba(236,234,225,.14);padding:
           <path d="M-16 0h32l-4 14h-24z" fill="#e0b45c" opacity=".9"/>
           <line x1="0" y1="14" x2="0" y2="26" stroke="#e0b45c" stroke-width="2"/>
         </g>
-        <line id="limline" x1="26" y1="456" x2="202" y2="456" stroke="#e08b73" stroke-width="1.5" stroke-dasharray="5 4"/>
-        <text x="34" y="450" font-family="Roboto Condensed,sans-serif" font-size="10" fill="#e08b73">2,0 м — предел ковша</text>
+        <line id="limline" x1="26" y1="456" x2="202" y2="456" stroke="#c0563f" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text x="34" y="450" font-family="Roboto Condensed,sans-serif" font-size="10" fill="#c0563f">2,0 м — предел ковша</text>
       </svg>
     </div>
     <div class="st-copy">
@@ -275,11 +274,11 @@ footer{background:var(--ink);border-top:1px solid rgba(236,234,225,.14);padding:
   var dn = document.getElementById('dn'), tasks = [].slice.call(document.querySelectorAll('#tasks li'));
   var TOP = 40, MAXP = 416;               // 2,0 м = 416 px по шкале разреза
   var STOPS = [0.5, 1.0, 1.5, 2.0];
-  function depthFor(p){
-    var seg = Math.min(1, p) * 4, i = Math.min(3, Math.floor(seg)), f = seg - i;
-    var stops = [0, .5, 1, 1.5, 2];
-    if (p >= 1) return 2;
-    return stops[i] + (stops[i+1] - stops[i]) * Math.min(1, f / .72);
+  function depthFor(p){                    // p 0..1 -> глубина 0..2 по четырём остановкам
+    var seg = p * 3, i = Math.min(2, Math.floor(seg)), f = Math.min(1, seg - i);
+    if (p >= 1) return 2.0;
+    var a = STOPS[i], b = STOPS[i+1];
+    return a + (b - a) * (f < .55 ? Math.min(1, f / .55) : 1);
   }
   function apply(p){
     var d = depthFor(p), h = d / 2 * MAXP;
